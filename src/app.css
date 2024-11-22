@@ -1,0 +1,10 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+html {
+    @apply bg-crimson-dawn-red text-true-to-you text-base;
+}
+.full-h{
+    height: 100vh;
+}
