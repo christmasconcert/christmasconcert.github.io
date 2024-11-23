@@ -2,7 +2,7 @@ name: Build & Deploy
 
 on:
   push:
-    branches: 'main'
+    branches: "main"
 
 jobs:
   build_site:
@@ -12,29 +12,36 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # Install Bun
-      - name: Setup Bun
-        run: |
-          curl -fsSL https://bun.sh/install | bash
-          export BUN_INSTALL="$HOME/.bun"
-          export PATH="$BUN_INSTALL/bin:$PATH"
-          bun --version
+      # Setup Node.js and enable npm caching
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
 
-      # Install dependencies using Bun
-      - name: Install dependencies
-        run: bun install
+      # Install dependencies with npm
+      - name: Install Dependencies
+        run: npm install
 
-      # Run the build command
+      # (Optional) Run linting step
+      - name: Lint Code
+        run: npm run lint
+
+      # (Optional) Run tests
+      - name: Run Tests
+        run: npm test
+
+      # Build the static site
       - name: Build
         env:
           NODE_ENV: production
-        run: bun run build
+        run: npm run build
 
       # Upload artifacts for deployment
       - name: Upload Artifacts
         uses: actions/upload-pages-artifact@v3
         with:
-          path: 'build/'
+          path: "build/" # Adjust if your build output folder is different
 
   deploy:
     needs: build_site
